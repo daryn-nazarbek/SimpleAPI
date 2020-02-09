@@ -43,6 +43,15 @@ class ClientApiTest extends TestCase
         ]);
     }
 
+    public function testClientShowWithBadRequest()
+    {
+        $response = $this->get("api/clients/9999999999"); //bad request. There is no such client
+
+        $response->assertStatus(404)->assertJson([
+            'error' => 'Resource not found!'
+        ]);
+    }
+
     public function testClientsCreatedCorrectly()
     {
         $params = [
@@ -62,10 +71,41 @@ class ClientApiTest extends TestCase
             ]);
     }
 
+    public function testClientsCreateWithBadRequest()
+    {
+        $params = [
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->email,
+            'password' => ''
+        ];
+        $response = $this->postJson('api/clients', $params);
+        $response->assertStatus(422)
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'first_name' => [
+                        0 => 'The first name field is required.'
+                    ],
+                    'password' => [
+                        0 => 'The password field is required.'
+                    ]
+                ]
+            ]);
+    }
+
     public function testClientsDeletedCorrectly()
     {
         $client = factory(Client::class)->create();
         $response = $this->json('DELETE', '/api/clients/'.$client->id);
         $response->assertStatus(204);
+    }
+
+    public function testClientDeleteWithBadRequest()
+    {
+        $response = $this->json('DELETE', '/api/clients/999999999999'); //bad request. There is no such client
+
+        $response->assertStatus(404)->assertJson([
+            'error' => 'Resource not found!'
+        ]);
     }
 }
