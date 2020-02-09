@@ -27,7 +27,7 @@ class ClientRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:clients,email',
-            'password' => 'required|string'
+            'password' => 'required|string|min:5'
         ];
         
         return $rules;
