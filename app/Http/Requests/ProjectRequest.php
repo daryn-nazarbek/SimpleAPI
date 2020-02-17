@@ -32,9 +32,9 @@ class ProjectRequest extends FormRequest
         switch ($this->getMethod())
         {
             case 'POST':
-                return ['client_id' => 'required|exists:clients,id'] + $rules;
-            case 'PUT':
                 return $rules;
+            case 'PUT':
+                return ['client_id' => 'required|exists:clients,id'] + $rules;
             
         }
     }
